@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="262cbf4a-d5c3-4c16-a837-b013d6958f4d" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="2a84252f-acc2-4af8-bf90-84fe4e0190c1" >
+		<http:request-connection host="localhost" port="8081" />
+	</http:request-config>
+	<flow name="Hello_Flow" doc:id="c6de9ae6-2860-4dab-8e33-ca69dcc22c11" >
+		<http:listener doc:name="/hello" doc:id="918124d9-484b-4dae-aee4-41b4d4e3206c" config-ref="HTTP_Listener_config" path="/hello"/>
+		<logger level="INFO" doc:name="Flow Start" doc:id="1a8f34b0-23e1-40ca-94d0-d50887fdff8c" message="Flow Start"/>
+		<set-variable value="#[attributes.queryParams.FName]" doc:name="Set FirstNameVariable" doc:id="5a64d29d-e51e-4b4a-a50b-940e14f6a7a5" variableName="FirstName"/>
+		<set-payload value='#["Welcome " ++ vars.FName as String default " " ++ attributes.queryParams.LName as String default ", to Mulesoft"]' doc:name="Greeting Message" doc:id="340f6025-ff40-4f9e-9cd5-d8bf4abe03da" />
+		<http:request method="GET" doc:name="Request /goodbye" doc:id="27389a23-c3b6-4f5f-ba81-2ecfb13afc73" config-ref="HTTP_Request_configuration" path="/goodbye">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"LName2" : attributes.queryParams.LName,
+	"FName2" : vars.FirstName
+}]]]></http:query-params>
+		</http:request>
+		<logger level="INFO" doc:name="Flow End" doc:id="f5dc50e7-93dd-498a-b159-c460129fe8a9" message="Flow End"/>
+	</flow>
+	<flow name="GoodBye_Flow" doc:id="e928585f-7d0c-4313-a985-b56b44b793ce" >
+		<http:listener doc:name="/goodbye" doc:id="96133ae1-97da-4a4f-8fc3-8aa202741017" config-ref="HTTP_Listener_config" path="/goodbye"/>
+		<logger level="INFO" doc:name="Flow Start" doc:id="665929fa-2fd4-4293-8038-4d46b2a2d590" message="Flow Start"/>
+		<set-variable value="#[attributes.queryParams.LName]" doc:name="Set LastName Variable" doc:id="cafd775f-40b9-4c87-bbe5-0d787dcc6188" variableName="LastName "/>
+		<set-payload doc:name="GoodBye Message" doc:id="4846f7c0-556e-4c3f-a71c-499a77ebe9ef" value='#["GoodBye !!! " ++ attributes.queryParams.FName2 as String default "" ++ " " ++ attributes.queryParams.LName2 as String default ""]'/>
+		<logger level="INFO" doc:name="Flow End" doc:id="2578a646-48b4-4cea-9a77-af1fdbf59521" message="Flow End"/>
+	</flow>
+</mule>
