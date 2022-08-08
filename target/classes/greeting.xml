@@ -12,7 +12,7 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 	</http:request-config>
 	<flow name="Hello_Flow" doc:id="c6de9ae6-2860-4dab-8e33-ca69dcc22c11" >
 		<http:listener doc:name="/hello" doc:id="918124d9-484b-4dae-aee4-41b4d4e3206c" config-ref="HTTP_Listener_config" path="/hello"/>
-		<logger level="INFO" doc:name="Flow Start" doc:id="1a8f34b0-23e1-40ca-94d0-d50887fdff8c" message="Flow Start"/>
+		<logger level="INFO" doc:name="START: Flow Start" doc:id="1a8f34b0-23e1-40ca-94d0-d50887fdff8c" message="START: Flow Start"/>
 		<set-variable value="#[attributes.queryParams.FName]" doc:name="Set FirstNameVariable" doc:id="5a64d29d-e51e-4b4a-a50b-940e14f6a7a5" variableName="FirstName"/>
 		<set-payload value='#["Welcome " ++ vars.FName as String default " " ++ attributes.queryParams.LName as String default ", to Mulesoft"]' doc:name="Greeting Message" doc:id="340f6025-ff40-4f9e-9cd5-d8bf4abe03da" />
 		<http:request method="GET" doc:name="Request /goodbye" doc:id="27389a23-c3b6-4f5f-ba81-2ecfb13afc73" config-ref="HTTP_Request_configuration" path="/goodbye">
